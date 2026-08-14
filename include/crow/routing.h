@@ -386,15 +386,10 @@ namespace crow // NOTE: Already documented in "crow/app.h"
             template<typename H1>
             struct call_params
             {
-                /// Handler to invoke.
                 H1& handler;
-                /// Parsed route parameters for current request.
                 const routing_params& params;
-                /// HTTP upgrade request.
                 const request& req;
-                /// Optional response used to reject websocket handshake.
                 std::optional<response>& res;
-                /// User data pointer that can be filled by handler.
                 void** userdata;
             };
 
