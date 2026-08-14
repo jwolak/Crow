@@ -119,8 +119,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         virtual void handle(request&, response&, const routing_params&) = 0;
 
         /// \brief Upgrade entry point that carries parsed route parameters.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \details Receives socket adaptor and parsed route parameters.
         virtual void handle_upgrade(const request&, response& res, SocketAdaptor&&, const routing_params&)
         {
             res = response(404);
@@ -128,10 +126,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief Backward-compatible upgrade entry point without explicit route params.
-        /// \details Delegates to the routing_params-aware overload with an empty parameter set.
-        /// \param req Upgrade request.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \param adaptor Socket adaptor instance for this connection.
         virtual void handle_upgrade(const request& req, response& res, SocketAdaptor&& adaptor)
         {
             routing_params empty_routing_params{};
@@ -139,8 +133,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief Upgrade entry point that carries parsed route parameters.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \details Receives Unix socket adaptor and parsed route parameters.
         virtual void handle_upgrade(const request&, response& res, UnixSocketAdaptor&&, const routing_params&)
         {
             res = response(404);
@@ -148,10 +140,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief Backward-compatible Unix upgrade entry point without explicit route params.
-        /// \details Delegates to the routing_params-aware overload with an empty parameter set.
-        /// \param req Upgrade request.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \param adaptor Unix socket adaptor instance for this connection.
         virtual void handle_upgrade(const request& req, response& res, UnixSocketAdaptor&& adaptor)
         {
             routing_params empty_routing_params{};
@@ -159,8 +147,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 #ifdef CROW_ENABLE_SSL
         /// \brief Upgrade entry point that carries parsed route parameters.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \details Receives SSL adaptor and parsed route parameters.
         virtual void handle_upgrade(const request&, response& res, SSLAdaptor&&, const routing_params&)
         {
             res = response(404);
@@ -573,8 +559,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief WebSocket upgrade handler receiving parsed route parameters.
-        /// \param req Upgrade request.
-        /// \param adaptor Socket adaptor instance.
         /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, SocketAdaptor&& adaptor, const routing_params& params) override
         {
@@ -583,8 +567,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief WebSocket Unix-socket upgrade handler receiving parsed route parameters.
-        /// \param req Upgrade request.
-        /// \param adaptor Unix socket adaptor instance.
         /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, UnixSocketAdaptor&& adaptor, const routing_params& params) override
         {
@@ -594,8 +576,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
 
 #ifdef CROW_ENABLE_SSL
         /// \brief WebSocket SSL upgrade handler receiving parsed route parameters.
-        /// \param req Upgrade request.
-        /// \param adaptor SSL adaptor instance.
         /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, SSLAdaptor&& adaptor, const routing_params& params) override
         {
