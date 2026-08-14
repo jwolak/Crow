@@ -154,10 +154,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief Backward-compatible SSL upgrade entry point without explicit route params.
-        /// \details Delegates to the routing_params-aware overload with an empty parameter set.
-        /// \param req Upgrade request.
-        /// \param res Response used to reject/finish upgrade flow.
-        /// \param adaptor SSL adaptor instance for this connection.
         virtual void handle_upgrade(const request& req, response& res, SSLAdaptor&& adaptor)
         {
             routing_params empty_routing_params{};
@@ -372,8 +368,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         namespace websocket_handler_call_helper
         {
             /// \brief Maps a websocket onaccept argument type to its index in routing_params.
-            /// 	param T Promoted handler argument type (int64_t, uint64_t, double, std::string).
-            /// 	param ParamIndex Zero-based index inside the per-type container in routing_params.
             template<typename T, int ParamIndex>
             struct call_pair
             {
@@ -382,7 +376,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
             };
 
             /// \brief Aggregates context needed to invoke websocket onaccept handler.
-            /// 	param H1 Callable wrapper type that is invoked after parameter extraction.
             template<typename H1>
             struct call_params
             {
@@ -554,7 +547,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief WebSocket upgrade handler receiving parsed route parameters.
-        /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, SocketAdaptor&& adaptor, const routing_params& params) override
         {
             max_payload_ = max_payload_override_ ? max_payload_ : app_->websocket_max_payload();
@@ -562,7 +554,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
         /// \brief WebSocket Unix-socket upgrade handler receiving parsed route parameters.
-        /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, UnixSocketAdaptor&& adaptor, const routing_params& params) override
         {
             max_payload_ = max_payload_override_ ? max_payload_ : app_->websocket_max_payload();
@@ -571,7 +562,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
 
 #ifdef CROW_ENABLE_SSL
         /// \brief WebSocket SSL upgrade handler receiving parsed route parameters.
-        /// \param params Parsed route parameters forwarded to websocket onaccept.
         void handle_upgrade(const request& req, response&, SSLAdaptor&& adaptor, const routing_params& params) override
         {
             crow::websocket::Connection<SSLAdaptor, App>::create(req, std::move(adaptor), app_, max_payload_, subprotocols_, open_handler_, message_handler_, close_handler_, error_handler_, accept_handler_, mirror_protocols_, params, app_->websocket_tcp_socket_options());
@@ -676,8 +666,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         }
 
             /// \brief Generic onaccept setter that supports optional route parameters.
-            /// 	param Func Callable type inferred from provided callback.
-            /// \param callback Callback invoked during websocket handshake.
             template<typename Func>
             self_t& onaccept(Func callback)
             {
@@ -708,12 +696,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
         std::vector<std::string> subprotocols_;
 
     private:
-
-        /// \brief Dispatches void-returning onaccept callbacks to the proper setup path.
-        /// 	param FunctionTraits Deduced callback signature traits.
-        /// 	param Func Callback type.
-        /// \param callback User-provided callback.
-        /// \param Type marker for void-returning callbacks.
         template<typename FunctionTraits, typename Func>
         self_t& onaccept_impl(Func callback, std::true_type)
         {
@@ -728,11 +710,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
             return setup_onaccept_with_response<FunctionTraits>(std::move(callback), black_magic::gen_seq<FunctionTraits::arity - 3>());
         }
 
-        /// \brief Dispatches bool-returning onaccept callbacks to the proper setup path.
-        /// 	param FunctionTraits Deduced callback signature traits.
-        /// 	param Func Callback type.
-        /// \param callback User-provided callback.
-        /// \param Type marker for bool-returning callbacks.
         template<typename FunctionTraits, typename Func>
         self_t& onaccept_impl(Func callback, std::false_type)
         {
@@ -747,12 +724,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
             return setup_onaccept_bool<FunctionTraits>(std::move(callback), black_magic::gen_seq<FunctionTraits::arity - 2>());
         }
 
-        /// \brief Sets up a void onaccept callback with optional route parameters.
-        /// 	param FunctionTraits Deduced callback signature traits.
-        /// 	param Func Callback type.
-        /// 	param Indices Indices of callback tail parameters (route params only).
-        /// \param callback User-provided callback.
-        /// \param Unused sequence object used only for compile-time expansion.
         template<typename FunctionTraits, typename Func, unsigned... Indices>
         self_t& setup_onaccept_with_response(Func callback, black_magic::seq<Indices...>)
         {
@@ -777,12 +748,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
             return *this;
         }
 
-        /// \brief Sets up a bool onaccept callback with optional route parameters.
-        /// 	param FunctionTraits Deduced callback signature traits.
-        /// 	param Func Callback type.
-        /// 	param Indices Indices of callback tail parameters (route params only).
-        /// \param callback User-provided callback.
-        /// \param Unused sequence object used only for compile-time expansion.
         template<typename FunctionTraits, typename Func, unsigned... Indices>
         self_t& setup_onaccept_bool(Func callback, black_magic::seq<Indices...>)
         {
