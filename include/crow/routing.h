@@ -220,9 +220,6 @@ namespace crow // NOTE: Already documented in "crow/app.h"
     {
         namespace routing_handler_call_helper
         {
-            /// \brief Maps a handler argument type to its index in routing_params.
-            /// 	param T Promoted handler argument type (int64_t, uint64_t, double, std::string).
-            /// 	param ParamIndex Zero-based index inside the per-type container in routing_params.
             template<typename T, int Pos>
             struct call_pair
             {
@@ -230,18 +227,12 @@ namespace crow // NOTE: Already documented in "crow/app.h"
                 static const int pos = Pos;
             };
 
-            /// \brief Aggregates context needed to invoke a route handler.
-            /// 	param H1 Callable wrapper type that is invoked after parameter extraction.
             template<typename H1>
             struct call_params
             {
-                /// Handler to invoke.
                 H1& handler;
-                /// Parsed route parameters for current request.
                 const routing_params& params;
-                /// Incoming request object.
                 request& req;
-                /// Response object to be filled by handler.
                 response& res;
             };
 
