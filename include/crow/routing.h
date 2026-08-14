@@ -297,7 +297,7 @@ namespace crow // NOTE: Already documented in "crow/app.h"
                     cparams.handler(
                       cparams.req,
                       cparams.res,
-                                            cparams.params.template get<typename Args1::type>(Args1::param_index)...);
+                      cparams.params.template get<typename Args1::type>(Args1::param_index)...);
                 }
             };
 
@@ -474,7 +474,7 @@ namespace crow // NOTE: Already documented in "crow/app.h"
                       cparams.req,
                       cparams.res,
                       cparams.userdata,
-                                            cparams.params.template get<typename Args1::type>(Args1::param_index)...);
+                      cparams.params.template get<typename Args1::type>(Args1::param_index)...);
                 }
             };
         } // namespace websocket_handler_call_helper
